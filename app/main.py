@@ -34,7 +34,7 @@ class PredictionRequest(BaseModel):
 
 
 class PredictionResponse(BaseModel):
-    prediction: float
+    prediction_minutes: float
 
 
 app = FastAPI(title="Tiffin Relay Prediction API", version="1.0.0")
@@ -50,4 +50,4 @@ def health():
 def predict(request: PredictionRequest):
     features = pd.DataFrame([request.model_dump()])[FEATURES]
     prediction = float(model.predict(features)[0])
-    return PredictionResponse(prediction=prediction)
+    return PredictionResponse(prediction_minutes=prediction)
