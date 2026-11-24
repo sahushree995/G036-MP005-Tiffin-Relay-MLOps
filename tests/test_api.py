@@ -26,7 +26,9 @@ def test_predict_returns_finite_prediction():
     response = client.post("/predict", json=VALID_PAYLOAD)
     assert response.status_code == 200
     assert set(response.json()) == {"prediction_minutes"}
-    assert isinstance(response.json()["prediction_minutes"], float)
+    prediction = response.json()["prediction_minutes"]
+    assert isinstance(prediction, float)
+    assert prediction == round(prediction, 1)
 
 
 def test_predict_rejects_too_many_tiffins():

@@ -49,5 +49,5 @@ def health():
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
     features = pd.DataFrame([request.model_dump()])[FEATURES]
-    prediction = float(model.predict(features)[0])
+    prediction = round(float(model.predict(features)[0]), 1)
     return PredictionResponse(prediction_minutes=prediction)
