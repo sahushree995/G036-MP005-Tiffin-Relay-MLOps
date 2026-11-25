@@ -1,0 +1,32 @@
+{
+  "data": {
+    "reference_file": "data/processed/train_cleaned.csv",
+    "later_file": "data/raw/later.csv",
+    "later_rows": 300,
+    "holdout_rows": 90,
+    "holdout_start_date": "2026-08-16",
+    "holdout_end_date": "2026-08-31"
+  },
+  "psi": {
+    "distance_km": 0.047668869075080916,
+    "tiffins": 5.384460268950998,
+    "handovers": 0.009730738741716002,
+    "wait_at_station_min": 0.014993434350307193,
+    "rider_age": 0.07930789417448536,
+    "temp_c": 0.017757833200033518
+  },
+  "v1_mae_by_route_zone_minutes": {
+    "Central": 4.610698602355961,
+    "Old City": 22.942770486634195,
+    "Suburb": 5.1050088185403295
+  },
+  "promotion_evaluation": {
+    "v1_last_30pct_mae_minutes": 13.391079332430273,
+    "v2_last_30pct_mae_minutes": 8.094959343985066,
+    "required_improvement_pct": 8.0,
+    "observed_improvement_pct": 39.54961252166702,
+    "maximum_v2_mae_minutes": 12.319792985835852,
+    "promotion_approved": true,
+    "decision": "promote_v2"
+  }
+}
