@@ -1,5 +1,8 @@
 from pathlib import Path
 from typing import Annotated
+import json
+import logging
+import sys
 
 import joblib
 import pandas as pd
@@ -41,6 +44,14 @@ app = FastAPI(title="Tiffin Relay Prediction API", version="1.0.0")
 model = joblib.load(MODEL_PATH)
 
 
+logger = logging.getLogger("tiffin.predictions")
+logger.setLevel(logging.INFO)
+logger.propagate = False
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(logging.Formatter("%(message)s"))
+logger.addHandler(handler)
+
+
 @app.get("/health")
 def health():
     return {"status": "healthy", "model_loaded": model is not None}
@@ -50,4 +61,9 @@ def health():
 def predict(request: PredictionRequest):
     features = pd.DataFrame([request.model_dump()])[FEATURES]
     prediction = round(float(model.predict(features)[0]), 1)
+    logger.info(json.dumps({
+        "event": "prediction",
+        "prediction_minutes": prediction,
+        "features": request.model_dump(),
+    }, separators=(",", ":")))
     return PredictionResponse(prediction_minutes=prediction)
