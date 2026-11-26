@@ -1,0 +1,6 @@
+# Project settings read by src/tiffin_mlops/config.py (yaml.safe_load).
+mlflow:
+  registered_model_name: MP005_Tiffin_Relay_Model
+promotion:
+  # Promote v2 only if v2_mae <= ratio * v1_mae (at least 8% lower MAE).
+  max_v2_to_v1_mae_ratio: 0.92
