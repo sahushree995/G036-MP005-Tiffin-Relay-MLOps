@@ -1,0 +1,23 @@
+artifact_path: file:///C:/Users/hp/G036-MP005-Tiffin-Relay-MLOps/mlruns/1/models/m-a326cdeb1ff84ee0bc045dcb339c4b3c/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.10.0
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.2
+    skops_trusted_types: null
+mlflow_version: 3.18.0
+model_id: m-a326cdeb1ff84ee0bc045dcb339c4b3c
+model_size_bytes: 2764
+model_uuid: m-a326cdeb1ff84ee0bc045dcb339c4b3c
+prompts: null
+run_id: 5bd4c35dc1304a90afffa848c8a25d6b
+utc_time_created: '2026-11-23 07:30:05.112489'
