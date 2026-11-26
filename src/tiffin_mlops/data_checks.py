@@ -81,17 +81,14 @@ def check_data(train_path, later_path, holdout_path):
 
     sentinel_result = None
 
-    candidates = [-9999, -999, -99, -1, 0, 999, 9999]
+    # Zero is a valid wait_at_station_min reading (range 0-25), not a sentinel.
+    candidates = [-9999, -999, -99, -1, 999, 9999]
 
     for column in train.select_dtypes(include="number").columns:
 
         for value in candidates:
 
             count = int((train[column] == value).sum())
-
-            # Zero is checked as a sentinel for station waiting time.
-            if value == 0 and column != "wait_at_station_min":
-                continue
 
             if count > 0:
 
