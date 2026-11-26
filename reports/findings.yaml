@@ -1,3 +1,6 @@
+group_id: "G036"
+problem_id: "MP005"
+
 data_issues:
   leaking_column:
     present: true
@@ -170,3 +173,26 @@ ops_monitoring:
     decision: promote_v2
   drift_alert_threshold: not configured
   monitoring_note: PSI values are reported for review; the repository specifies no PSI alert threshold.
+
+tracking:
+  experiment_name: MP005_Tiffin_Relay
+  best_run_id: ff8501c06a6d4992b0d63d187ac2d497
+  registered_model_name: MP005_Tiffin_Relay_Model
+  champion_version: 2
+monitoring:
+  psi:
+    distance_km: 0.047668869075080916
+    tiffins: 5.384460268950998
+    handovers: 0.009730738741716002
+    wait_at_station_min: 0.014993434350307193
+    rider_age: 0.07930789417448536
+    temp_c: 0.017757833200033518
+  most_drifted_feature: tiffins
+  mae_by_group:
+    Central: 4.610698602355961
+    Suburb: 5.1050088185403295
+    Old City: 22.942770486634195
+  worst_served_group: Old City
+  mae_v1_on_check: 13.391079332430273
+  mae_v2_on_check: 8.094959343985066
+  decision: promote
