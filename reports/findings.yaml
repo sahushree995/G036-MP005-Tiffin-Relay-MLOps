@@ -1,4 +1,3 @@
-
 data_issues:
   leaking_column:
     present: true
@@ -34,3 +33,109 @@ data_issues:
     present: false
     column: null
     true_levels: null
+
+
+model_training:
+  experiment_name: MP005_Tiffin_Relay
+  registered_model_name: MP005_Tiffin_Relay_Model
+  tracking_backend: sqlite:///mlflow.db
+
+  evaluation_metric: MAE
+  metric_unit: minutes
+  random_state: 42
+
+  dataset:
+    cleaned_file: data/processed/train_cleaned.csv
+    original_training_rows: 1000
+    training_rows: 800
+    validation_rows: 200
+    validation_split: 0.20
+
+  preprocessing:
+    numeric_imputation: median
+    categorical_imputation: most_frequent
+    categorical_encoding: OneHotEncoder
+    handle_unknown_categories: ignore
+    leakage_column_excluded: delivered_min_from_receipt
+
+  baseline_models:
+    LinearRegression:
+      validation_mae: 2.3536
+
+    DecisionTree:
+      validation_mae: 5.9329
+
+    RandomForest:
+      validation_mae: 3.4925
+
+  tuned_models:
+    Ridge:
+      cv_mae: 2.3169
+      validation_mae: 2.3669
+      best_alpha: 10.0
+
+    Lasso:
+      cv_mae: 2.3172
+      validation_mae: 2.3538
+      best_alpha: 0.001
+
+    ElasticNet:
+      cv_mae: 2.3167
+      validation_mae: 2.3628
+      best_alpha: 0.01
+      best_l1_ratio: 0.2
+
+    GradientBoosting:
+      cv_mae: 2.6340
+      validation_mae: 2.6500
+      best_n_estimators: 200
+      best_learning_rate: 0.1
+      best_max_depth: 2
+
+  selected_v1_model: LinearRegression
+  selection_reason: lowest_validation_mae_and_simplicity
+
+  v1_run_id: ff8501c06a6d4992b0d63d187ac2d497
+  v1_registered_version: 1
+
+
+model_retraining:
+  later_dataset: data/raw/later.csv
+  later_data_rows: 300
+
+  split_strategy: chronological
+  later_train_rows: 210
+  later_test_rows: 90
+  combined_training_rows: 1210
+
+  evaluation:
+    v1_later_mae: 13.3911
+    v2_later_mae: 8.0950
+    improvement_percentage: 39.55
+
+  promotion:
+    required_improvement_percentage: 8.0
+    promotion_rule: "v2_mae <= 0.92 * v1_mae"
+    promotion_threshold_mae: 12.3198
+    promotion_approved: true
+
+  v2_run_id: 5bd4c35dc1304a90afffa848c8a25d6b
+  v2_registered_version: 2
+
+  champion:
+    alias: champion
+    version: 2
+    model_path: models/model.joblib
+
+
+holdout_predictions:
+  input_file: data/raw/holdout_features.csv
+  output_file: predictions/holdout_predictions.csv
+
+  total_records: 250
+  output_columns:
+    - record_id
+    - prediction
+
+  missing_predictions: 0
+  duplicate_record_ids: 0
