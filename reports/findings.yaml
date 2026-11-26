@@ -139,3 +139,34 @@ holdout_predictions:
 
   missing_predictions: 0
   duplicate_record_ids: 0
+
+ops_monitoring:
+  reference_dataset: data/processed/train_cleaned.csv
+  comparison_dataset: data/raw/later.csv
+  later_rows: 300
+  psi_method: reference decile bins with a 1e-6 proportion floor
+  psi_by_numeric_feature:
+    distance_km: 0.0477
+    tiffins: 5.3845
+    handovers: 0.0097
+    wait_at_station_min: 0.0150
+    rider_age: 0.0793
+    temp_c: 0.0178
+  route_zone_v1_mae_minutes:
+    Central: 4.6107
+    Old City: 22.9428
+    Suburb: 5.1050
+  promotion_evaluation:
+    evaluation_window: final 30 percent of date-sorted later.csv
+    holdout_rows: 90
+    holdout_start_date: "2026-08-16"
+    holdout_end_date: "2026-08-31"
+    v1_mae_minutes: 13.3911
+    v2_mae_minutes: 8.0950
+    improvement_percentage: 39.55
+    promotion_rule: "v2_mae <= 0.92 * v1_mae"
+    maximum_v2_mae_minutes: 12.3198
+    promotion_approved: true
+    decision: promote_v2
+  drift_alert_threshold: not configured
+  monitoring_note: PSI values are reported for review; the repository specifies no PSI alert threshold.
