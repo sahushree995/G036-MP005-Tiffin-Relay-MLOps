@@ -10,10 +10,10 @@ data_issues:
     factor: 1000
 
   sentinel_value:
-    present: true
-    column: wait_at_station_min
-    value: 0
-    count: 2
+    present: false
+    column: null
+    value: null
+    count: null
 
   duplicate_rows:
     present: true
