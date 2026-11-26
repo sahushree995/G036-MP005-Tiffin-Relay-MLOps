@@ -14,8 +14,11 @@ from sklearn.metrics import mean_absolute_error
 
 from src.tiffin_mlops.train import FEATURES, NUMERIC_FEATURES, TARGET
 
-PROMOTION_RATIO = 0.92
-REGISTERED_MODEL_NAME = "MP005_Tiffin_Relay_Model"
+from src.tiffin_mlops.config import load_params
+
+_PARAMS = load_params()
+PROMOTION_RATIO = _PARAMS["promotion"]["max_v2_to_v1_mae_ratio"]
+REGISTERED_MODEL_NAME = _PARAMS["mlflow"]["registered_model_name"]
 
 
 def population_stability_index(reference, current, bins=10):
