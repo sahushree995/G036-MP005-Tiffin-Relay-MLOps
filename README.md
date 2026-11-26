@@ -1,15 +1,17 @@
 # G036-MP005 — Tiffin Relay Delivery Time Prediction
 
+**Group:** G036 | **Problem:** MP005 — Tiffin Relay Delivery Time (Lucknow) | **Faculty:** Amit Soni | **Batch:** 72
+
 MLOps project for predicting tiffin delivery time in Lucknow from delivery, rider, weather, transport, and route-zone features.
 
 ## Team and contributions
 
-| Member | Role | Branch |
-| --- | --- | --- |
-| Lakshay Godara | Data Lead | `data-lead` |
-| Shree Sahu | Model Lead | `model-lead` |
-| Aryan Sharma | Service Lead | `service-lead` |
-| Ashutosh Tiwari | Ops Lead | `ops-lead` |
+| Member | Enrolment no. | Role | Branch |
+| --- | --- | --- | --- |
+| Lakshay Godara | S24CSEU2725 | Data Lead | `data-lead` |
+| Shree Sahu | S24CSEU2730 | Model Lead | `model-lead` |
+| Aryan Sharma | S24CSEU2711 | Service Lead | `service-lead` |
+| Ashutosh Tiwari | S24CSEU1561 | Ops Lead | `ops-lead` |
 
 ## Project structure
 
@@ -19,6 +21,7 @@ MLOps project for predicting tiffin delivery time in Lucknow from delivery, ride
 - `models/model.joblib`: exported champion pipeline (V2).
 - `predictions/holdout_predictions.csv`: predictions for 250 holdout records.
 - `mlflow.db`, `mlruns/`: experiment tracking, registry, and model artifacts.
+- `params.yaml`: promotion rule and registered-model name, read by `src/tiffin_mlops/config.py`.
 - `app/`: FastAPI inference application.
 - `tests/`: model, API, and monitoring tests.
 - `k8s/`: Kubernetes Deployment and Service manifests.
@@ -27,7 +30,7 @@ MLOps project for predicting tiffin delivery time in Lucknow from delivery, ride
 
 ## Data preparation and tracking
 
-The Data Lead checks seven quality issues and cleans duplicates, the Central-zone distance unit mix-up, zero waiting-time sentinels, and stuck rider-age sensor values. The leakage field `delivered_min_from_receipt` is removed from model features. Numeric missing values are imputed in the model pipeline; categorical values are imputed and one-hot encoded with unknown categories ignored.
+The Data Lead checks seven quality issues and removes duplicate rows, corrects the Central-zone distance unit mix-up (metres to km), blanks the two zero waiting-time readings, and blanks the stuck rider-age sensor values (2026-03-27 to 2026-04-11). No sentinel value is present in `train.csv`: zero is a valid waiting time (the column ranges from 0 to 25), but the cleaning step treats those two rows as missing and the pipeline imputes the median, which has a negligible effect. The leakage field `delivered_min_from_receipt` is removed from model features. Numeric missing values are imputed in the model pipeline; categorical values are imputed and one-hot encoded with unknown categories ignored.
 
 Raw `train.csv` and `later.csv` are DVC-tracked and ignored by Git. The checked-in `.dvc/config` has no storage remote configured. To reproduce from DVC, obtain the team's remote configuration, install DVC, then run:
 
@@ -67,7 +70,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 Implemented endpoints:
 
-- `GET /health` reports service and model-load status.
+- `GET /health` returns `{"status": "ok", "model_loaded": true}`.
 - `POST /predict` accepts the eight model features and returns `prediction_minutes`.
 - `GET /docs` provides FastAPI's generated Swagger UI.
 
@@ -106,16 +109,23 @@ Integration verification on `final-integration` (2026-11-26): **18 tests passed,
 Build and deploy the API to a Kubernetes cluster with the manifests in `k8s/`:
 
 ```sh
-docker build -t mp005-api:latest .
+docker build -t mp005-api:1.0 .
 # For a local Kind cluster, make the image available with:
-kind load docker-image mp005-api:latest
+kind load docker-image mp005-api:1.0
 kubectl apply -f k8s/deployment.yaml -f k8s/service.yaml
 kubectl rollout status deployment/mp005-api
 kubectl get deployment mp005-api
 kubectl get service mp005-svc
 ```
 
-The deployment specifies three replicas on container port 8000. Readiness and liveness probes call `/health`. The Service is internal (`ClusterIP`); use `kubectl port-forward service/mp005-svc 8000:8000` for a local check. These manifests are prepared, but no live cluster deployment is claimed here.
+The deployment specifies three replicas on container port 8000; the Service `mp005-svc` listens on port 80 and forwards to 8000. Readiness and liveness probes call `/health`. The Service is internal (`ClusterIP`); use `kubectl port-forward service/mp005-svc 8000:80` for a local check. These manifests are prepared, but no live cluster deployment is claimed here.
+
+## Individual contributions
+
+- **Lakshay Godara (Data Lead, `data-lead`):** DVC tracking, the seven data-quality checks, cleaning code and the data part of `findings.yaml`.
+- **Shree Sahu (Model Lead, `model-lead`):** baseline and tuned models, MLflow tracking and registry, retraining (V2 champion), holdout predictions and the model tests.
+- **Aryan Sharma (Service Lead, `service-lead`):** FastAPI service, request validation rules, API tests and the Dockerfile.
+- **Ashutosh Tiwari (Ops Lead, `ops-lead`):** GitHub Actions, Kubernetes manifests, prediction logging, PSI and route-zone MAE monitoring, and the final integration into `main`.
 
 ## Limitations and submission notes
 
