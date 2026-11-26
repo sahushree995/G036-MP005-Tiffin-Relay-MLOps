@@ -54,7 +54,7 @@ logger.addHandler(handler)
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "model_loaded": model is not None}
+    return {"status": "ok", "model_loaded": model is not None}
 
 
 @app.post("/predict", response_model=PredictionResponse)

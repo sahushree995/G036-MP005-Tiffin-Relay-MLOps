@@ -10,6 +10,6 @@ spec:
     app: mp005-api
   ports:
     - name: http
-      port: 8000
-      targetPort: http
+      port: 80
+      targetPort: 8000
       protocol: TCP

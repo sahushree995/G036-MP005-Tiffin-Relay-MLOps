@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mp005-api
-          image: mp005-api:latest
+          image: mp005-api:1.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
